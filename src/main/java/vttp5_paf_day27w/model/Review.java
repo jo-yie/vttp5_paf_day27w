@@ -59,10 +59,10 @@ public class Review {
 }
 
 // {
-//     "user": "jo yie 2",
+//     "user": "jo yie 6 feb",
 //     "rating": 5,
 //     "comment": "comment",
 //     "ID": 1,
 //     "posted": "2025-02-02",
-//     "name": "board game"
+//     "name": 1
 // }

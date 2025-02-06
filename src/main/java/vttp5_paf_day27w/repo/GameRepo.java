@@ -43,6 +43,20 @@ public class GameRepo {
     */
     public String insertReview(Review review) {
 
+        Document toInsert = reviewPojoToDocument(review);
+
+        Document newDoc = template.insert(toInsert, Constants.C_REVIEWS);
+        ObjectId id = newDoc.getObjectId("_id");
+
+        // returns _id field
+        return id.toString();
+
+    }
+
+    // helper method 
+    // Review POJO --> Document
+    private Document reviewPojoToDocument(Review review) {
+
         Document toInsert = new Document(); 
         toInsert.put("user", review.getUser());
         toInsert.put("rating", review.getRating());
@@ -50,11 +64,8 @@ public class GameRepo {
         toInsert.put("ID", review.getID());
         toInsert.put("posted", review.getPosted());
         toInsert.put("name", review.getName());
-
-        Document newDoc = template.insert(toInsert, Constants.C_REVIEWS);
-        ObjectId id = newDoc.getObjectId("_id");
-
-        return id.toString();
+    
+        return toInsert; 
 
     }
 

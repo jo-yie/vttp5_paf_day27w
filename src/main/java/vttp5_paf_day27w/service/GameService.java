@@ -24,7 +24,19 @@ public class GameService {
 
     }
 
+    // TASK A
+    // check if meets conditions before inserting TODO
     public String insertReview(Map<String, String> data) {
+
+        Review r = mapToReviewPojo(data);
+
+        return gameRepo.insertReview(r);
+
+    }
+
+    // helper method 
+    // Map<String, String> --> Review POJO 
+    private Review mapToReviewPojo(Map<String, String> data) {
 
         Review r = new Review(); 
         r.setUser(data.get("user"));
@@ -32,19 +44,31 @@ public class GameService {
         r.setComment(data.get("comment"));
         r.setID(Integer.valueOf(data.get("ID")));
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            Date dateNew = sdf.parse(data.get("posted"));
-            r.setPosted(dateNew);
-
-
-        } catch (ParseException e) {
-            System.out.println(e.getMessage());
-        }
+        r.setPosted(stringToDate(data.get("posted")));
 
         r.setName(data.get("name"));
 
-        return gameRepo.insertReview(r);
+        return r;
+
+    }
+
+    // helper method 
+    // String --> Date 
+    private Date stringToDate(String dateString) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        
+        Date dateNew = new Date();
+
+        try {
+            dateNew = sdf.parse(dateString);
+
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+
+        }
+
+        return dateNew;
 
     }
     

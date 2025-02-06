@@ -1,6 +1,5 @@
 package vttp5_paf_day27w.service;
 
-import java.lang.classfile.ClassFile.Option;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,17 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vttp5_paf_day27w.model.Review;
-import vttp5_paf_day27w.repo.GameRepo;
+import vttp5_paf_day27w.model.UpdateReview;
+import vttp5_paf_day27w.repo.ReviewRepo;
 
 @Service
-public class GameService {
+public class ReviewService {
 
     @Autowired
-    private GameRepo gameRepo; 
+    private ReviewRepo reviewRepo; 
 
     public List<Review> getAllReviews() {
 
-        return gameRepo.getAllReviews();
+        return reviewRepo.getAllReviews();
 
     }
 
@@ -37,7 +37,7 @@ public class GameService {
 
         }
 
-        return gameRepo.insertReview(r);
+        return reviewRepo.insertReview(r);
 
     }
 
@@ -118,7 +118,7 @@ public class GameService {
     // set game name based on id 
     public Document checkGameIdExists(int gameId) {
 
-        Optional<Document> document = gameRepo.checkGameIdExists(gameId);
+        Optional<Document> document = reviewRepo.checkGameIdExists(gameId);
 
         if (document.isEmpty()) {
             return null;
@@ -136,6 +136,22 @@ public class GameService {
         Document document = checkGameIdExists(gameId);
         String gameName = document.getString("name");
         return gameName;
+
+    }
+
+    // TASK B 
+    public String updateReview(UpdateReview updateReview, String reviewId) {
+
+        updateReview.setPosted(new java.util.Date());
+        return reviewRepo.updateReview(updateReview, reviewId);
+
+    } 
+
+    // helper method 
+    // check review "_id" exists
+    public Optional<Document> checkReviewIdExists(String id) {
+
+        return reviewRepo.checkReviewIdExists(id);
 
     }
 

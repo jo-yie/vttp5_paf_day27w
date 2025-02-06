@@ -3,27 +3,31 @@ package vttp5_paf_day27w.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import vttp5_paf_day27w.service.GameService;
+import vttp5_paf_day27w.model.UpdateReview;
+import vttp5_paf_day27w.service.ReviewService;
 
 @RestController
 public class GameController {
 
     @Autowired
-    private GameService gameService; 
+    private ReviewService reviewService; 
 
     // get all reviews 
     @GetMapping("")
     public ResponseEntity<Object> getAllReviews() {
 
         return ResponseEntity.ok()
-            .body(gameService.getAllReviews());
+            .body(reviewService.getAllReviews());
 
     }
 
@@ -36,7 +40,7 @@ public class GameController {
     public ResponseEntity<Object> addReview(@RequestParam Map<String, String> data) {
 
         return ResponseEntity.ok()
-            .body(gameService.insertReview(data));
+            .body(reviewService.insertReview(data));
 
     }
 
@@ -45,8 +49,27 @@ public class GameController {
     public ResponseEntity<Object> checkGameIdExists(@PathVariable int game_id) {
 
         return ResponseEntity.ok()
-            .body(gameService.checkGameIdExists(game_id));
+            .body(reviewService.checkGameIdExists(game_id));
 
     }
     
+    // TASK B 
+    // PUT /review/<review_id> 
+    // Content-Type: application/json
+    @PutMapping("/review/{review_id}") 
+    public ResponseEntity<Object> updateReview(@RequestBody UpdateReview updateReview,
+        @PathVariable String review_id) {
+
+        if (review_id.length() < 24 || reviewService.checkReviewIdExists(review_id).isEmpty()) {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("Error", "Review ID is invalid"));
+
+        } 
+
+        return ResponseEntity.ok()
+            .body(reviewService.updateReview(updateReview, review_id));
+
+    }
+
 }

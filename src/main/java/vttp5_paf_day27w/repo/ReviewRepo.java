@@ -9,13 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import vttp5_paf_day27w.model.Review;
+import vttp5_paf_day27w.model.UpdateReview;
 import vttp5_paf_day27w.utils.Constants;
 
 @Repository
-public class GameRepo {
+public class ReviewRepo {
 
     @Autowired
     private MongoTemplate template; 
@@ -89,4 +91,53 @@ public class GameRepo {
 
     }
     
+    // TASK B 
+    /*
+    db.reviews.updateOne(
+        { _id: ObjectId("67a336ff402a2a24da2df15d") },
+        {
+            $set: { 
+                comment: "comment new", 
+                rating: 8 
+            }, 
+            $push: {
+                edited: { 
+                    comment: "comddment 3", 
+                    rating: "rat33idddng", 
+                    posted: "posteddd" 
+                }
+            }
+        }
+    )
+    */
+    public String updateReview(UpdateReview updateReview, String reviewId) {
+
+        ObjectId objectId = new ObjectId(reviewId);
+        Criteria criteria = Criteria.where(Constants.F_REVIEW_ID).is(objectId);
+        Query query = new Query().addCriteria(criteria);
+        
+        Update update = new Update().set("rating", updateReview.getRating()).set("comment", updateReview.getComment());
+
+        return template.updateFirst(query, update, Constants.C_REVIEWS).toString();
+        
+    }
+
+    // helper method 
+    // check review "_id" exists 
+    /*
+    db.reviews.find({
+        _id : ObjectId("67a3322f32605ad52ec191b9")
+    })
+    */
+    public Optional<Document> checkReviewIdExists(String id) {
+
+        ObjectId objectId = new ObjectId(id);
+        Criteria criteria = Criteria.where(Constants.F_REVIEW_ID).is(objectId);
+        Query query = new Query().addCriteria(criteria);
+
+        Document document = template.findOne(query, Document.class, Constants.C_REVIEWS);
+
+        return Optional.ofNullable(document); 
+
+    }
 }

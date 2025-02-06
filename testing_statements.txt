@@ -1,3 +1,4 @@
+// TASK A
 {
     "user": "jo yie 6 feb",
     "rating": 5,
@@ -12,4 +13,10 @@
     "rating": 11,
     "comment": "comment",
     "ID": 1
+}
+
+// TASK B 
+{
+    "comment" : "comment here",
+    "rating" : "8"
 }

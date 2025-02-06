@@ -57,12 +57,3 @@ public class Review {
         this.name = name;
     }
 }
-
-// {
-//     "user": "jo yie 6 feb",
-//     "rating": 5,
-//     "comment": "comment",
-//     "ID": 1,
-//     "posted": "2025-02-02",
-//     "name": 1
-// }

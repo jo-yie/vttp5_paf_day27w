@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,8 @@ public class GameController {
 
     }
 
+    // TODO error handling incomplete 
+    // throw error if user input is not valid 
     // TASK A 
     // POST /review 
     // Content-Type: application/x-www-form-urlencoded
@@ -37,6 +40,13 @@ public class GameController {
 
     }
 
+    // test game id exists 
+    @GetMapping("/test/{game_id}")
+    public ResponseEntity<Object> checkGameIdExists(@PathVariable int game_id) {
 
+        return ResponseEntity.ok()
+            .body(gameService.checkGameIdExists(game_id));
+
+    }
     
 }

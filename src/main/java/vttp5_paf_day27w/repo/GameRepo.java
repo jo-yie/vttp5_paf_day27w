@@ -1,11 +1,13 @@
 package vttp5_paf_day27w.repo;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -46,7 +48,7 @@ public class GameRepo {
         Document toInsert = reviewPojoToDocument(review);
 
         Document newDoc = template.insert(toInsert, Constants.C_REVIEWS);
-        ObjectId id = newDoc.getObjectId("_id");
+        ObjectId id = newDoc.getObjectId(Constants.F_REVIEW_ID);
 
         // returns _id field
         return id.toString();
@@ -69,5 +71,22 @@ public class GameRepo {
 
     }
 
+    // helper method
+    // check if game id exists 
+    /*
+    db.game.find({
+        gid : 1
+    })
+    */
+    public Optional<Document> checkGameIdExists(int gameId) {
+
+        Criteria criteria = Criteria.where(Constants.F_GAME_ID).is(gameId);
+        Query query = new Query().addCriteria(criteria);
+
+        Document document = template.findOne(query, Document.class, Constants.C_GAMES);
+
+        return Optional.ofNullable(document);
+
+    }
     
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import vttp5_paf_day27w.model.UpdateReview;
@@ -54,6 +55,8 @@ public class ReviewController {
     }
     
     // TODO error handling incomplete
+    // TODO check rating is between 0 and 10 
+    // TODO allow empty comment field
     // TASK B 
     // PUT /review/<review_id> 
     // Content-Type: application/json
@@ -70,6 +73,24 @@ public class ReviewController {
 
         return ResponseEntity.ok()
             .body(reviewService.updateReview(updateReview, review_id));
+
+    }
+
+    // TASK C 
+    // GET /review/<review_id>
+    // Accept: application/json
+    @GetMapping("/review/{review_id}")
+    public ResponseEntity<Object> getReviewById(@PathVariable String review_id) {
+
+        if (review_id.length() < 24 || reviewService.checkReviewIdExists(review_id).isEmpty()) {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("Error", "Review ID is invalid"));
+
+        } 
+
+        return ResponseEntity.ok()
+            .body(reviewService.getReviewById(review_id));
 
     }
 

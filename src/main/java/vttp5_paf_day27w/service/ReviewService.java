@@ -11,6 +11,7 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import vttp5_paf_day27w.model.RetrieveReview;
 import vttp5_paf_day27w.model.Review;
 import vttp5_paf_day27w.model.UpdateReview;
 import vttp5_paf_day27w.repo.ReviewRepo;
@@ -152,6 +153,39 @@ public class ReviewService {
     public Optional<Document> checkReviewIdExists(String id) {
 
         return reviewRepo.checkReviewIdExists(id);
+
+    }
+
+    // TASK C 
+    public RetrieveReview getReviewById(String reviewId) {
+
+        Document document = reviewRepo.checkReviewIdExists(reviewId).get();
+        return documentToRetrieveReviewPojo(document);
+
+    }
+
+    // helper method 
+    // Document --> RetrieveReview POJO 
+    public RetrieveReview documentToRetrieveReviewPojo(Document document) {
+
+        RetrieveReview r = new RetrieveReview(); 
+
+        r.setUser(document.getString("user"));
+        r.setRating(document.getInteger("rating"));
+        r.setComment(document.getString("comment"));
+        r.setID(document.getInteger("ID"));
+        r.setPosted(document.getDate("posted"));
+        r.setName(document.getString("name"));
+
+        if (document.get("edited") != null) {
+            r.setEdited(true);
+        } else {
+            r.setEdited(false);
+        }
+
+        r.setTimestamp(new Date());
+
+        return r;
 
     }
 

@@ -68,7 +68,12 @@ public class ReviewController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("Error", "Review ID is invalid"));
 
-        } 
+        } else if (updateReview.getRating() > 10 || updateReview.getRating() < 0) {
+
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                .body(Map.of("Error", "Rating cannot be less than 0 or greater than 10"));
+
+        }
 
         return ResponseEntity.ok()
             .body(reviewService.updateReview(updateReview, review_id));

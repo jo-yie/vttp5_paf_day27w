@@ -140,7 +140,7 @@ public class ReviewService {
     }
 
     // TASK B 
-    public String updateReview(UpdateReview updateReview, String reviewId) {
+    public int updateReview(UpdateReview updateReview, String reviewId) {
 
         updateReview.setPosted(new java.util.Date());
         return reviewRepo.updateReview(updateReview, reviewId);

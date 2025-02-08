@@ -12,6 +12,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.result.UpdateResult;
+
 import vttp5_paf_day27w.model.Review;
 import vttp5_paf_day27w.model.UpdateReview;
 import vttp5_paf_day27w.utils.Constants;
@@ -110,15 +113,24 @@ public class ReviewRepo {
         }
     )
     */
-    public String updateReview(UpdateReview updateReview, String reviewId) {
+    public int updateReview(UpdateReview updateReview, String reviewId) {
 
         ObjectId objectId = new ObjectId(reviewId);
         Criteria criteria = Criteria.where(Constants.F_REVIEW_ID).is(objectId);
         Query query = new Query().addCriteria(criteria);
         
-        Update update = new Update().set("rating", updateReview.getRating()).set("comment", updateReview.getComment());
+        Update update = new Update()
+            .set("rating", updateReview.getRating())
+            .set("comment", updateReview.getComment())
+            .push("edited", new BasicDBObject()
+                .append("comment", updateReview.getComment())
+                .append("rating", updateReview.getRating())
+                .append("posted", updateReview.getPosted()));
 
-        return template.updateFirst(query, update, Constants.C_REVIEWS).toString();
+
+        UpdateResult updateResult =  template.updateFirst(query, update, Constants.C_REVIEWS);
+
+        return (int) updateResult.getModifiedCount();
         
     }
 

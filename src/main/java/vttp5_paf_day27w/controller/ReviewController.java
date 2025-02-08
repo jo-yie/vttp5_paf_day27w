@@ -17,7 +17,7 @@ import vttp5_paf_day27w.model.UpdateReview;
 import vttp5_paf_day27w.service.ReviewService;
 
 @RestController
-public class GameController {
+public class ReviewController {
 
     @Autowired
     private ReviewService reviewService; 
@@ -53,6 +53,7 @@ public class GameController {
 
     }
     
+    // TODO error handling incomplete
     // TASK B 
     // PUT /review/<review_id> 
     // Content-Type: application/json

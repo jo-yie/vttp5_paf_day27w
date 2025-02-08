@@ -6,13 +6,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import vttp5_paf_day27w.model.RetrieveReview;
 import vttp5_paf_day27w.model.Review;
+import vttp5_paf_day27w.model.ReviewHistory;
 import vttp5_paf_day27w.model.UpdateReview;
 import vttp5_paf_day27w.repo.ReviewRepo;
 
@@ -181,6 +184,47 @@ public class ReviewService {
             r.setEdited(true);
         } else {
             r.setEdited(false);
+        }
+
+        r.setTimestamp(new Date());
+
+        return r;
+
+    }
+
+    // TASK D 
+    public ReviewHistory getReviewHistory(String reviewId) {
+
+        Document document = reviewRepo.checkReviewIdExists(reviewId).get();
+        return documentToReviewHistoryPojo(document);
+
+    }
+
+    // helper method 
+    // Document --> ReviewHistory POJO 
+    public ReviewHistory documentToReviewHistoryPojo(Document document) {
+
+        ReviewHistory r = new ReviewHistory(); 
+
+        r.setUser(document.getString("user"));
+        r.setRating(document.getInteger("rating"));
+        r.setComment(document.getString("comment"));
+        r.setId(document.getInteger("ID"));
+        r.setPosted(document.getDate("posted"));
+        r.setName(document.getString("name"));
+
+        List<Document> edited = document.getList("edited", Document.class);
+        if (edited != null) {
+            List<UpdateReview> editedList = edited.stream()
+                .map(doc -> new UpdateReview(
+                    doc.getString("comment"),
+                    doc.getInteger("rating"),
+                    doc.getDate("posted")
+                ))
+                .collect(Collectors.toList());
+
+            r.setEdited(editedList);
+
         }
 
         r.setTimestamp(new Date());

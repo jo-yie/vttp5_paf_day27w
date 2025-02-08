@@ -46,11 +46,11 @@ public class ReviewController {
     }
 
     // test game id exists 
-    @GetMapping("/test/{game_id}")
-    public ResponseEntity<Object> checkGameIdExists(@PathVariable int game_id) {
+    @GetMapping("/test/{review_id}")
+    public ResponseEntity<Object> checkReviewIdExists(@PathVariable String review_id) {
 
         return ResponseEntity.ok()
-            .body(reviewService.checkGameIdExists(game_id));
+            .body(reviewService.checkReviewIdExists(review_id));
 
     }
     
@@ -91,6 +91,24 @@ public class ReviewController {
 
         return ResponseEntity.ok()
             .body(reviewService.getReviewById(review_id));
+
+    }
+
+    // TASK D 
+    // GET /review/<review_id>/history 
+    // Accept: application/json
+    @GetMapping("/review/{review_id}/history")
+    public ResponseEntity<Object> getReviewHistory(@PathVariable String review_id) {
+
+        if (review_id.length() < 24 || reviewService.checkReviewIdExists(review_id).isEmpty()) {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("Error", "Review ID is invalid"));
+
+        } 
+
+        return ResponseEntity.ok()
+            .body(reviewService.getReviewHistory(review_id));
 
     }
 
